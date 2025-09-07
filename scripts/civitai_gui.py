@@ -149,9 +149,7 @@ def txt2img_output(image_url):
 def get_base_models():
     api_url = 'https://civitai.com/api/v1/models?baseModels=GetModels'
     json_return = _api.request_civit_api(api_url, True)
-    default_options = ["SD 1.4","SD 1.5","SD 1.5 LCM","SD 2.0","SD 2.0 768","SD 2.1","SD 2.1 768",
-    "SD 2.1 Unclip","SDXL 0.9","SDXL 1.0","SDXL 1.0 LCM","SDXL Distilled","SDXL Turbo","SDXL Lightning",
-    "Stable Cascade","Pony","SVD","SVD XT","Playground v2","PixArt a", "Flux.1 S", "Flux.1 D","Other"]
+    default_options = ["Pony","Illustrious","NoobAI"]
     
     if not isinstance(json_return, dict):
         print("Couldn't fetch latest baseModel options, using default.")

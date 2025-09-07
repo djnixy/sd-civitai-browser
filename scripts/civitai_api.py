@@ -305,15 +305,21 @@ def create_api_url(content_type=None, sort_type=None, period_type=None, use_sear
         params["types"] = content_type
     
     if use_search_term != "None" and search_term:
-        search_term = search_term.replace("\\", "\\\\").lower()
-        if "civitai.com" in search_term:
-            model_number = re.search(r'models/(\d+)', search_term).group(1)
-            params = {'ids': model_number}
-
-        else:
-            key_map = {"User name": "username", "Tag": "tag"}
-            search_key = key_map.get(use_search_term, "query")
-            params[search_key] = search_term
+            search_term = search_term.replace("\\", "\\\\").lower()
+            if "civitai.com" in search_term:
+                model_number = re.search(r'models/(\d+)', search_term).group(1)
+                params = {'ids': model_number}
+            
+            # FIX: Detect exact phrase search (double quotes)
+            elif search_term.startswith('"') and search_term.endswith('"'):
+                # If quoted, force search by 'tag' (which is exact) and strip the quotes.
+                params["tag"] = search_term.strip('"')
+            
+            else:
+                # Original logic for non-quoted searches
+                key_map = {"User name": "username", "Tag": "tag"}
+                search_key = key_map.get(use_search_term, "query")
+                params[search_key] = search_term
     
     if base_filter:
         params["baseModels"] = base_filter
