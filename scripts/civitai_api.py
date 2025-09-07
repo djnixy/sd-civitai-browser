@@ -296,6 +296,7 @@ def create_api_url(content_type=None, sort_type=None, period_type=None, use_sear
     
     if isNext is not None:
         api_url = gl.json_data['metadata']['nextPage' if isNext else 'prevPage']
+        print(f"CivitAI API URL: {api_url}")
         debug_print(api_url)
         return api_url
     
