@@ -312,8 +312,8 @@ def create_api_url(content_type=None, sort_type=None, period_type=None, use_sear
             
             # FIX: Detect exact phrase search (double quotes)
             elif search_term.startswith('"') and search_term.endswith('"'):
-                # If quoted, force search by 'tag' (which is exact) and strip the quotes.
-                params["tag"] = search_term.strip('"')
+                # If quoted, search by 'query' to include the quotes in the search.
+                params["query"] = search_term
             
             else:
                 # Original logic for non-quoted searches
