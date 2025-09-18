@@ -221,6 +221,9 @@ def on_ui_tabs():
                         save_settings = gr.Button(value="Save settings as default", elem_id="save_set_btn")
                 search_term = gr.Textbox(label="", placeholder="Search CivitAI", elem_id="searchBox")
                 refresh = gr.Button(value="", elem_id=refreshbtn, icon="placeholder")
+            with gr.Row(elem_id="url_load_row"):
+                url_search_term = gr.Textbox(label="", placeholder="Load from Civitai URL (e.g., https://civitai.com/models/12345/...)")
+                load_from_url_button = gr.Button(value="Load from URL")
             with gr.Row(elem_id=header):
                 with gr.Row(elem_id="pageBox"):
                     get_prev_page = gr.Button(value="Prev page", interactive=False, elem_id="pageBtn1")
@@ -801,6 +804,23 @@ def on_ui_tabs():
             inputs_to_use = refresh_inputs if use_refresh_inputs else page_inputs
             trigger(fn=function, inputs=inputs_to_use, outputs=page_outputs)
             trigger(fn=None, _js="() => multi_model_select()")
+
+        load_from_url_button.click(
+            fn=_api.initial_model_page,
+            inputs=[
+                content_type,
+                sort_type,
+                period_type,
+                use_search_term,
+                url_search_term,    # <-- Use our new URL textbox as the search term
+                page_slider,
+                base_filter,
+                only_liked,
+                show_nsfw,
+                tile_count_slider
+            ],
+            outputs=page_outputs
+        )
         
         for button in cancel_btn_list:
             button.click(fn=_file.cancel_scan)
