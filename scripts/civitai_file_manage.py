@@ -1264,7 +1264,19 @@ def scan_finish():
 def load_to_browser(content_type, sort_type, period_type, use_search_term, search_term, tile_count, base_filter, nsfw):
     global from_ver, from_installed
     
-    model_list_return = _api.initial_model_page(content_type, sort_type, period_type, use_search_term, search_term, 1, base_filter, False, nsfw, tile_count, True)
+    # model_list_return = _api.initial_model_page(content_type, sort_type, period_type, use_search_term, search_term, 1, base_filter, False, nsfw, tile_count, True)
+    model_list_return = _api.initial_model_page(
+        content_type=content_type,
+        sort_type=sort_type,
+        period_type=period_type,
+        use_search_term=use_search_term,
+        search_term=search_term,
+        base_filter=base_filter,
+        only_liked=False,
+        nsfw=nsfw,
+        tile_count=tile_count,
+        from_update_tab=True
+    )
     from_ver, from_installed = False, False
     return (
         *model_list_return,
