@@ -23,6 +23,9 @@ import scripts.civitai_file_manage as _file
 
 gl.init()
 
+def get_domain():
+    return getattr(opts, "civitai_domain", "civitai.com")
+
 def contenttype_folder(content_type, desc=None, fromCheck=False, custom_folder=None):
     use_LORA = getattr(opts, "use_LORA", False)
     folder = None
@@ -291,8 +294,9 @@ def model_list_html(json_data):
     return HTML
 
 def create_api_url(content_type=None, sort_type=None, period_type=None, use_search_term=None, base_filter=None, only_liked=None, tile_count=None, search_term=None, nsfw=None, isNext=None):
-    base_url = "https://civitai.com/api/v1/models"
-    version_url = "https://civitai.com/api/v1/model-versions"
+    domain = get_domain()
+    base_url = f"https://{domain}/api/v1/models"
+    version_url = f"https://{domain}/api/v1/model-versions"
     
     if isNext is not None:
         api_url = gl.json_data['metadata']['nextPage' if isNext else 'prevPage']
@@ -307,7 +311,7 @@ def create_api_url(content_type=None, sort_type=None, period_type=None, use_sear
     
     if use_search_term != "None" and search_term:
             search_term = search_term.replace("\\", "\\\\").lower()
-            if "civitai.com" in search_term:
+            if "civitai.com" in search_term or "civitai.red" in search_term:
                 model_number = re.search(r'models/(\d+)', search_term).group(1)
                 params = {'ids': model_number}
             
@@ -658,6 +662,8 @@ def update_model_info(model_string=None, model_version=None, only_html=False, in
                 version_name = selected_version['name']
                 version_id = selected_version['id']
 
+                domain = get_domain()
+
                 if selected_version['trainedWords']:
                     output_training = ",".join(selected_version['trainedWords'])
                     output_training = re.sub(r'<[^>]*:[^>]*>', '', output_training)
@@ -714,10 +720,10 @@ def update_model_info(model_string=None, model_version=None, only_html=False, in
                                 model_folder = os.path.join(contenttype_folder("TextualInversion"))
                 
                 model_url = selected_version.get('downloadUrl', '')
-                model_main_url = f"https://civitai.com/models/{item['id']}"
+                model_main_url = f"https://{domain}/models/{item['id']}"
                 img_html = '<div class="sampleimgs"><input type="radio" name="zoomRadio" id="resetZoom" class="zoom-radio" checked>'
                 
-                url = f"https://civitai.com/api/v1/model-versions/{selected_version['id']}"
+                url = f"https://{domain}/api/v1/model-versions/{selected_version['id']}"
                 api_version = request_civit_api(url)
                 
                 for index, pic in enumerate(api_version['images']):
@@ -832,7 +838,7 @@ def update_model_info(model_string=None, model_version=None, only_html=False, in
                 if not creator or model_uploader == 'User not found':
                     uploader = f'<h3 class="model-uploader"><span>{escape(str(model_uploader))}</span>{uploader_avatar}</h3>'
                 else:
-                    uploader = f'<h3 class="model-uploader">Uploaded by <a href="https://civitai.com/user/{escape(str(model_uploader))}" target="_blank">{escape(str(model_uploader))}</a>{uploader_avatar}</h3>'
+                    uploader = f'<h3 class="model-uploader">Uploaded by <a href="https://{domain}/user/{escape(str(model_uploader))}" target="_blank">{escape(str(model_uploader))}</a>{uploader_avatar}</h3>'
                 output_html = f'''
                 <div class="model-block">
                     <h2><a href={model_main_url} target="_blank" id="model_header">{escape(str(model_name))}</a></h2>
@@ -1124,7 +1130,7 @@ def get_headers(referer=None, no_api=None):
         "Content-Type": "application/json"
     }
     if referer:
-        headers['Referer'] = f"https://civitai.com/models/{referer}"
+        headers['Referer'] = f"https://{get_domain()}/models/{referer}"
     if api_key and not no_api:
         headers['Authorization'] = f'Bearer {api_key}'
     

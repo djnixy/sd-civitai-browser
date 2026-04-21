@@ -336,6 +336,9 @@ function setupClickOutsideListener() {
 // Create hyperlink in settings to CivitAI account settings
 function createLink(infoElement) {
 
+    const domainInput = document.querySelector('#civitai_domain textarea');
+    const domain = domainInput ? domainInput.value : 'civitai.com';
+
     const existingText = "(You can create your own API key in your CivitAI account settings, this required for some downloads, Requires UI reload)";
     const linkText = "CivitAI account settings";
     
@@ -343,7 +346,7 @@ function createLink(infoElement) {
     
     const link = document.createElement('a');
     link.textContent = linkText;
-    link.href = 'https://civitai.com/user/account';
+    link.href = `https://${domain}/user/account`;
     link.target = '_blank';
     
     while (infoElement.firstChild) infoElement.removeChild(infoElement.firstChild);
