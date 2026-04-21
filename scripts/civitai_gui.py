@@ -147,7 +147,7 @@ def txt2img_output(image_url):
         return gr.Textbox.update(value=geninfo)
 
 def get_base_models():
-    api_url = 'https://civitai.com/api/v1/models?baseModels=GetModels'
+    api_url = f'https://{_api.get_domain()}/api/v1/models?baseModels=GetModels'
     json_return = _api.request_civit_api(api_url, True)
     default_options = ["Pony","Illustrious","NoobAI"]
     
@@ -222,7 +222,7 @@ def on_ui_tabs():
                 search_term = gr.Textbox(label="", placeholder="Search CivitAI", elem_id="searchBox")
                 refresh = gr.Button(value="", elem_id=refreshbtn, icon="placeholder")
             with gr.Row(elem_id="url_load_row"):
-                url_search_term = gr.Textbox(label="", placeholder="Load from Civitai URL (e.g., https://civitai.com/models/12345/...)")
+                url_search_term = gr.Textbox(label="", placeholder=f"Load from Civitai URL (e.g., https://{_api.get_domain()}/models/12345/...)")
                 load_from_url_button = gr.Button(value="Load from URL")
             with gr.Row(elem_id=header):
                 with gr.Row(elem_id="pageBox"):
@@ -331,6 +331,7 @@ def on_ui_tabs():
         #Yes, there is probably a much better way of passing variables/triggering functions between javascript and python
 
         gr.Textbox(elem_id="custom_subfolders_list", visible=False, value=format_custom_subfolders())
+        gr.Textbox(elem_id="civitai_domain", visible=False, value=_api.get_domain())
         model_id = gr.Textbox(visible=False)
         queue_trigger = gr.Textbox(visible=False)
         dl_url = gr.Textbox(visible=False)
@@ -1266,6 +1267,18 @@ def on_ui_settings():
         )
     )
     
+    shared.opts.add_option(
+        "civitai_domain",
+        shared.OptionInfo(
+            "civitai.com",
+            "Civitai domain",
+            gr.Radio,
+            lambda: {"choices": ["civitai.com", "civitai.red"]},
+            section=browser,
+            **({'category_id': cat_id} if ver_bool else {})
+        ).info("Select the preferred Civitai domain. Requires UI reload.")
+    )
+
     shared.opts.add_option(
         "image_location",
         shared.OptionInfo(
