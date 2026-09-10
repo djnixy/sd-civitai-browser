@@ -47,7 +47,10 @@ if not forge:
 gl.init()
 
 def saveSettings(ust, ct, pt, st, bf, cj, td, ol, hi, sn, ss, ts):
-    config = cmd_opts.ui_config_file
+    config = getattr(cmd_opts, "ui_config_file", None)
+    if not config:
+        print("Cannot save settings: ui_config_file is not set on cmd_opts")
+        return
 
     # Create a dictionary to map the settings to their respective variables
     settings_map = {
@@ -88,10 +91,10 @@ def saveSettings(ust, ct, pt, st, bf, cj, td, ol, hi, sn, ss, ts):
         print(f"Updated settings to: {config}")
 
 def all_visible(html_check):
-    return gr.Button.update(visible="model-checkbox" in html_check)
+    return gr.update(visible="model-checkbox" in html_check)
         
 def HTMLChange(input):
-    return gr.HTML.update(value=input)
+    return gr.update(value=input)
 
 def show_multi_buttons(model_list, type_list, version_value):
     model_list = json.loads(model_list)
@@ -130,12 +133,12 @@ def show_multi_buttons(model_list, type_list, version_value):
         except:
             sub_folders = ["None"]
     
-    return (gr.Button.update(visible=multi, interactive=multi), # Download Multi Button
-            gr.Button.update(visible=BtnDwn if multi else True if not version_value.endswith('[Installed]') else False), # Download Button
-            gr.Button.update(visible=BtnDel if not model_list else False), # Delete Button 
-            gr.Button.update(visible=otherButtons), # Save model info Button
-            gr.Button.update(visible=otherButtons), # Save images Button
-            gr.Dropdown.update(visible=multi, interactive=multi_file_subfolder, choices=sub_folders, value=default_subfolder) # Selected type sub folder
+    return (gr.update(visible=multi, interactive=multi), # Download Multi Button
+            gr.update(visible=BtnDwn if multi else True if not version_value.endswith('[Installed]') else False), # Download Button
+            gr.update(visible=BtnDel if not model_list else False), # Delete Button
+            gr.update(visible=otherButtons), # Save model info Button
+            gr.update(visible=otherButtons), # Save images Button
+            gr.update(visible=multi, interactive=multi_file_subfolder, choices=sub_folders, value=default_subfolder) # Selected type sub folder
             )
 
 def txt2img_output(image_url):
@@ -144,22 +147,22 @@ def txt2img_output(image_url):
     if geninfo:
         nr = _download.random_number()
         geninfo = nr + geninfo
-        return gr.Textbox.update(value=geninfo)
+        return gr.update(value=geninfo)
 
 def get_base_models():
-    api_url = f'https://{_api.get_domain()}/api/v1/models?baseModels=GetModels'
-    json_return = _api.request_civit_api(api_url, True)
-    default_options = ["Pony","Illustrious","NoobAI"]
-    
-    if not isinstance(json_return, dict):
-        print("Couldn't fetch latest baseModel options, using default.")
-        return default_options
-    
+    default_options = ["Pony", "Illustrious", "NoobAI"]
     try:
+        api_url = f'https://{_api.get_domain()}/api/v1/models?baseModels=GetModels'
+        json_return = _api.request_civit_api(api_url, True)
+
+        if not isinstance(json_return, dict):
+            print("Couldn't fetch latest baseModel options, using default.")
+            return default_options
+
         options = json_return['error']['issues'][0]['unionErrors'][0]['issues'][0]['options']
         return options
-    except (KeyError, IndexError) as e:
-        print(f"Basemodel fetch error extracting options: {e}")
+    except Exception as e:
+        print(f"Basemodel fetch error: {e}, using default options.")
         return default_options
 
 def on_ui_tabs():    
@@ -378,7 +381,7 @@ def on_ui_tabs():
                 newpath = gl.main_folder
             else:
                 newpath = gl.main_folder + sub_folder
-            return gr.Textbox.update(value=newpath)
+            return gr.update(value=newpath)
 
         # Javascript Functions #
         
@@ -470,33 +473,33 @@ def on_ui_tabs():
         def update_models_dropdown(input):
             if not gl.json_data:
                 return (
-                    gr.Dropdown.update(value=None, choices=[], interactive=False), # List models
-                    gr.Dropdown.update(value=None, choices=[], interactive=False), # List version
-                    gr.Textbox.update(value=None), # Preview HTML
-                    gr.Textbox.update(value=None, interactive=False), # Trained Tags
-                    gr.Textbox.update(value=None, interactive=False), # Base Model
-                    gr.Textbox.update(value=None, interactive=False), # Model filename
-                    gr.Textbox.update(value=None, interactive=False), # Install path
-                    gr.Dropdown.update(value=None, choices=[], interactive=False), # Sub folder
-                    gr.Button.update(interactive=False), # Download model btn
-                    gr.Button.update(interactive=False), # Save image btn
-                    gr.Button.update(interactive=False, visible=False), # Delete model btn
-                    gr.Dropdown.update(value=None, choices=[], interactive=False), # File list
-                    gr.Textbox.update(value=None), # DL Url
-                    gr.Textbox.update(value=None), # Model ID
-                    gr.Textbox.update(value=None), # Current sha256
-                    gr.Button.update(interactive=False),  # Save model info
-                    gr.Textbox.update(value='<div style="font-size: 24px; text-align: center; margin: 50px;">Click the search icon to load models.<br>Use the filter icon to filter results.</div>') # Model list
+                    gr.update(value=None, choices=[], interactive=False), # List models
+                    gr.update(value=None, choices=[], interactive=False), # List version
+                    gr.update(value=None), # Preview HTML
+                    gr.update(value=None, interactive=False), # Trained Tags
+                    gr.update(value=None, interactive=False), # Base Model
+                    gr.update(value=None, interactive=False), # Model filename
+                    gr.update(value=None, interactive=False), # Install path
+                    gr.update(value=None, choices=[], interactive=False), # Sub folder
+                    gr.update(interactive=False), # Download model btn
+                    gr.update(interactive=False), # Save image btn
+                    gr.update(interactive=False, visible=False), # Delete model btn
+                    gr.update(value=None, choices=[], interactive=False), # File list
+                    gr.update(value=None), # DL Url
+                    gr.update(value=None), # Model ID
+                    gr.update(value=None), # Current sha256
+                    gr.update(interactive=False),  # Save model info
+                    gr.update(value='<div style="font-size: 24px; text-align: center; margin: 50px;">Click the search icon to load models.<br>Use the filter icon to filter results.</div>') # Model list
                 )
             
             model_string = re.sub(r'\.\d{3}$', '', input)
             model_name, model_id = _api.extract_model_info(model_string)
             model_versions = _api.update_model_versions(model_id)
             (html, tags, base_mdl, DwnButton, SaveImages, DelButton, filelist, filename, dl_url, id, current_sha256, install_path, sub_folder) = _api.update_model_info(model_string, model_versions.get('value'))
-            return (gr.Dropdown.update(value=model_string, interactive=True),
+            return (gr.update(value=model_string, interactive=True),
                     model_versions,html,tags,base_mdl,filename,install_path,sub_folder,DwnButton,SaveImages,DelButton,filelist,dl_url,id,current_sha256,
-                    gr.Button.update(interactive=True),
-                    gr.Textbox.update()
+                    gr.update(interactive=True),
+                    gr.update()
                     )
         
         model_select.change(
@@ -1048,15 +1051,22 @@ def make_lambda(folder, desc):
     return lambda: {"choices": subfolder_list(folder, desc)}
 
 def on_ui_settings():
+    cat_id = None
     if ver_bool:
         browser = ("civitai_browser", "Browser")
         download = ("civitai_browser_download", "Downloads")
-        from modules.options import categories
-        categories.register_category("civitai_browser_plus", "CivitAI Browser+")
-        cat_id = "civitai_browser_plus"
-    else:
+        try:
+            from modules.options import categories
+            categories.register_category("civitai_browser_plus", "CivitAI Browser+")
+            cat_id = "civitai_browser_plus"
+        except Exception:
+            cat_id = None
+    if not cat_id:
         section = ("civitai_browser_plus", "CivitAI Browser+")
         browser = download = section
+
+    use_cat = bool(ver_bool and cat_id)
+
     if not (hasattr(shared.OptionInfo, "info") and callable(getattr(shared.OptionInfo, "info"))):
         def info(self, info):
             self.label += f" ({info})"
@@ -1070,7 +1080,7 @@ def on_ui_settings():
             True,
             "Download models using Aria2",
             section=download,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Disable this option if you're experiencing any issues with downloads or if you want to use a proxy.")
     )
 
@@ -1080,7 +1090,7 @@ def on_ui_settings():
             False,
             "Disable Async DNS for Aria2",
             section=download,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Useful for users who use PortMaster or other software that controls the DNS")
     )
 
@@ -1090,7 +1100,7 @@ def on_ui_settings():
             False,
             "Show Aria2 logs in console",
             section=download,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Requires UI reload")
     )
 
@@ -1102,7 +1112,7 @@ def on_ui_settings():
             gr.Slider,
             lambda: {"maximum": "64", "minimum": "1", "step": "1"},
             section=download,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Only applies to Aria2")
     )
 
@@ -1112,7 +1122,7 @@ def on_ui_settings():
             r"",
             "Custom Aria2 command line flags",
             section=download,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Requires UI reload")
     )
 
@@ -1122,7 +1132,7 @@ def on_ui_settings():
             False,
             "Automatically unpack .zip files after downloading",
             section=download,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         )
     )
 
@@ -1132,7 +1142,7 @@ def on_ui_settings():
             False,
             "Save API info of model when saving model info",
             section=download,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("creates an api_info.json file when saving any model info with all the API data of the model")
     )
     
@@ -1142,7 +1152,7 @@ def on_ui_settings():
             False,
             "Automatically save all images",
             section=download,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Automatically saves all the images of a model after downloading")
     )
     
@@ -1153,7 +1163,7 @@ def on_ui_settings():
             r"",
             "Personal CivitAI API key",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("You can create your own API key in your CivitAI account settings, this required for some downloads, Requires UI reload")
     )
 
@@ -1163,7 +1173,7 @@ def on_ui_settings():
             True,
             "Hide early access models",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Early access models are only downloadable for supporter tier members")
     )
 
@@ -1173,7 +1183,7 @@ def on_ui_settings():
             ver_bool,
             "Combine LoCon, LORA & DoRA as one option",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("LoCon requires SD-WebUI v1.5 or higher,  DoRA requires v1.9 or higher")
     )
 
@@ -1183,7 +1193,7 @@ def on_ui_settings():
             True,
             "Hide sub-folders that start with a '.'",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         )
     )
     
@@ -1193,7 +1203,7 @@ def on_ui_settings():
             False,
             "Use local HTML file for model info",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Uses the matching local HTML file when pressing CivitAI button on model cards in txt2img and img2img")
     )
     
@@ -1203,7 +1213,7 @@ def on_ui_settings():
             False,
             "Use local images in the HTML",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Only works if all images of the corresponding model are downloaded")
     )
     
@@ -1213,7 +1223,7 @@ def on_ui_settings():
             False,
             "Page navigation as header",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Keeps the page navigation always visible at the top, Requires UI reload")
     )
 
@@ -1223,7 +1233,7 @@ def on_ui_settings():
             True,
             'Gif/video playback in the browser',
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Disable this option if you're experiencing high CPU usage during video/gif playback")
     )
     
@@ -1233,7 +1243,7 @@ def on_ui_settings():
             True,
             'Individual prompt buttons',
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Turns individual prompts from an example image into a button to send it to txt2img")
     )
     
@@ -1243,7 +1253,7 @@ def on_ui_settings():
             True,
             'Save model description to json',
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info('This saves the models description to the description field on model cards')
     )
 
@@ -1253,7 +1263,7 @@ def on_ui_settings():
             True,
             'Show "Model not found" print during update scanning',
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         )
     )
     
@@ -1263,7 +1273,7 @@ def on_ui_settings():
             False,
             'Send model from the cards CivitAI button to the browser, instead of showing a popup',
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         )
     )
     
@@ -1275,7 +1285,7 @@ def on_ui_settings():
             gr.Radio,
             lambda: {"choices": ["civitai.com", "civitai.red"]},
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Select the preferred Civitai domain. Requires UI reload.")
     )
 
@@ -1285,7 +1295,7 @@ def on_ui_settings():
             r"",
             "Custom save images location",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Overrides the download folder location when saving images.")
     )
 
@@ -1295,7 +1305,7 @@ def on_ui_settings():
             True,
             'Use sub folders inside custom images location',
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Will append any content type and sub folders to the custom path.")
     )
     
@@ -1305,7 +1315,7 @@ def on_ui_settings():
             False,
             "Store the HTML and api_info in the custom images location",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         )
     )
     
@@ -1317,7 +1327,7 @@ def on_ui_settings():
             gr.Textbox,
             {"placeholder": "socks4://0.0.0.0:00000 | socks5://0.0.0.0:00000"},
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Only works with proxies that support HTTPS, turn Aria2 off for proxy downloads")
     )
         
@@ -1329,7 +1339,7 @@ def on_ui_settings():
             gr.Textbox,
             {"placeholder": "/path/to/custom/cabundle.pem"},
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Specify custom CA bundle for SSL certificate checks if required")
     )
             
@@ -1339,7 +1349,7 @@ def on_ui_settings():
             False,
             "Disable SSL certificate checks",
             section=browser,
-            **({'category_id': cat_id} if ver_bool else {})
+            **({'category_id': cat_id} if use_cat else {})
         ).info("Not recommended for security, may be required if you do not have the correct CA Bundle available")
     )
 
@@ -1383,7 +1393,7 @@ def on_ui_settings():
             folder = "LORA"
             setting_name = "LORA_LoCon"
         
-        shared.opts.add_option(f"{setting_name}_default_subfolder", shared.OptionInfo("None", folder_name, gr.Dropdown, make_lambda(folder, desc), section=download, **({'category_id': cat_id} if ver_bool else {})))
+        shared.opts.add_option(f"{setting_name}_default_subfolder", shared.OptionInfo("None", folder_name, gr.Dropdown, make_lambda(folder, desc), section=download, **({'category_id': cat_id} if use_cat else {})))
     
 script_callbacks.on_ui_tabs(on_ui_tabs)
 script_callbacks.on_ui_settings(on_ui_settings)

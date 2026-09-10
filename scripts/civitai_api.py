@@ -44,20 +44,23 @@ def contenttype_folder(content_type, desc=None, fromCheck=False, custom_folder=N
         folder = os.path.join(main_models)
         
     if content_type == "Checkpoint":
-        if cmd_opts.ckpt_dir and not custom_folder:
-            folder = cmd_opts.ckpt_dir
+        ckpt_dir = getattr(cmd_opts, "ckpt_dir", None)
+        if ckpt_dir and not custom_folder:
+            folder = ckpt_dir
         else:
-            folder = os.path.join(main_models,"Stable-diffusion")
+            folder = os.path.join(main_models, "Stable-diffusion")
             
     elif content_type == "Hypernetwork":
-        if cmd_opts.hypernetwork_dir and not custom_folder:
-            folder = cmd_opts.hypernetwork_dir
+        hypernetwork_dir = getattr(cmd_opts, "hypernetwork_dir", None)
+        if hypernetwork_dir and not custom_folder:
+            folder = hypernetwork_dir
         else:
             folder = os.path.join(main_models, "hypernetworks")
         
     elif content_type == "TextualInversion":
-        if cmd_opts.embeddings_dir and not custom_folder:
-            folder = cmd_opts.embeddings_dir
+        embeddings_dir = getattr(cmd_opts, "embeddings_dir", None)
+        if embeddings_dir and not custom_folder:
+            folder = embeddings_dir
         else:
             folder = os.path.join(main_data, "embeddings")
         
@@ -68,34 +71,39 @@ def contenttype_folder(content_type, desc=None, fromCheck=False, custom_folder=N
             folder = os.path.join(custom_folder, "aesthetic_embeddings")
             
     elif content_type == "LORA":
-        if cmd_opts.lora_dir and not custom_folder:
-            folder = cmd_opts.lora_dir
+        lora_dir = getattr(cmd_opts, "lora_dir", None)
+        if lora_dir and not custom_folder:
+            folder = lora_dir
         else:
-            folder = folder = os.path.join(main_models, "Lora")
+            folder = os.path.join(main_models, "Lora")
         
     elif content_type == "LoCon":
         folder = os.path.join(main_models, "LyCORIS")
         if use_LORA and not fromCheck:
-            if cmd_opts.lora_dir and not custom_folder:
-                folder = cmd_opts.lora_dir
+            lora_dir = getattr(cmd_opts, "lora_dir", None)
+            if lora_dir and not custom_folder:
+                folder = lora_dir
             else:
-                folder = folder = os.path.join(main_models, "Lora")
+                folder = os.path.join(main_models, "Lora")
 
     elif content_type == "DoRA":
-        if cmd_opts.lora_dir and not custom_folder:
-            folder = cmd_opts.lora_dir
+        lora_dir = getattr(cmd_opts, "lora_dir", None)
+        if lora_dir and not custom_folder:
+            folder = lora_dir
         else:
-            folder = folder = os.path.join(main_models, "Lora")
+            folder = os.path.join(main_models, "Lora")
             
     elif content_type == "VAE":
-        if cmd_opts.vae_dir and not custom_folder:
-            folder = cmd_opts.vae_dir
+        vae_dir = getattr(cmd_opts, "vae_dir", None)
+        if vae_dir and not custom_folder:
+            folder = vae_dir
         else:
             folder = os.path.join(main_models, "VAE")
             
     elif content_type == "Controlnet":
-        if hasattr(cmd_opts, 'controlnet_dir') and cmd_opts.controlnet_dir and not custom_folder:
-            folder = cmd_opts.controlnet_dir
+        controlnet_dir = getattr(cmd_opts, "controlnet_dir", None)
+        if controlnet_dir and not custom_folder:
+            folder = controlnet_dir
         else:
             folder = os.path.join(main_models, "ControlNet")
             
@@ -104,28 +112,33 @@ def contenttype_folder(content_type, desc=None, fromCheck=False, custom_folder=N
     
     elif content_type == "Upscaler":
         if "SWINIR" in desc:
-            if cmd_opts.swinir_models_path and not custom_folder:
-                folder = cmd_opts.swinir_models_path
+            swinir_path = getattr(cmd_opts, "swinir_models_path", None)
+            if swinir_path and not custom_folder:
+                folder = swinir_path
             else:
                 folder = os.path.join(main_models, "SwinIR")
         elif "REALESRGAN" in desc:
-            if cmd_opts.realesrgan_models_path and not custom_folder:
-                folder = cmd_opts.realesrgan_models_path
+            realesrgan_path = getattr(cmd_opts, "realesrgan_models_path", None)
+            if realesrgan_path and not custom_folder:
+                folder = realesrgan_path
             else:
                 folder = os.path.join(main_models, "RealESRGAN")
         elif "GFPGAN" in desc:
-            if cmd_opts.gfpgan_models_path and not custom_folder:
-                folder = cmd_opts.gfpgan_models_path
+            gfpgan_path = getattr(cmd_opts, "gfpgan_models_path", None)
+            if gfpgan_path and not custom_folder:
+                folder = gfpgan_path
             else:
                 folder = os.path.join(main_models, "GFPGAN")
         elif "BSRGAN" in desc:
-            if cmd_opts.bsrgan_models_path and not custom_folder:
-                folder = cmd_opts.bsrgan_models_path
+            bsrgan_path = getattr(cmd_opts, "bsrgan_models_path", None)
+            if bsrgan_path and not custom_folder:
+                folder = bsrgan_path
             else:
                 folder = os.path.join(main_models, "BSRGAN")
         else:
-            if cmd_opts.esrgan_models_path and not custom_folder:
-                folder = cmd_opts.esrgan_models_path
+            esrgan_path = getattr(cmd_opts, "esrgan_models_path", None)
+            if esrgan_path and not custom_folder:
+                folder = esrgan_path
             else:
                 folder = os.path.join(main_models, "ESRGAN")
             
@@ -403,23 +416,23 @@ def initial_model_page(content_type=None, sort_type=None, period_type=None, use_
         HTML = model_list_html(gl.json_data)
     
     return  (
-            gr.Dropdown.update(choices=model_list, value="", interactive=True), # Model List
-            gr.Dropdown.update(choices=[], value=""), # Version List
-            gr.HTML.update(value=HTML), # HTML Tiles
-            gr.Button.update(interactive=hasPrev), # Prev Page Button
-            gr.Button.update(interactive=hasNext), # Next Page Button
-            gr.Slider.update(value=current_page, maximum=max_page), # Page Slider
-            gr.Button.update(interactive=False), # Save Tags
-            gr.Button.update(interactive=False), # Save Images
-            gr.Button.update(interactive=False, visible=False if gl.isDownloading else True), # Download Button
-            gr.Button.update(interactive=False, visible=False), # Delete Button
-            gr.Textbox.update(interactive=False, value=None, visible=True), # Install Path
-            gr.Dropdown.update(choices=[], value="", interactive=False), # Sub Folder List
-            gr.Dropdown.update(choices=[], value="", interactive=False), # File List
-            gr.HTML.update(value='<div style="min-height: 0px;"></div>'), # Preview HTML
-            gr.Textbox.update(value=None), # Trained Tags
-            gr.Textbox.update(value=None), # Base Model
-            gr.Textbox.update(value=None) # Model Filename
+            gr.update(choices=model_list, value="", interactive=True), # Model List
+            gr.update(choices=[], value=""), # Version List
+            gr.update(value=HTML), # HTML Tiles
+            gr.update(interactive=hasPrev), # Prev Page Button
+            gr.update(interactive=hasNext), # Next Page Button
+            gr.update(value=current_page, maximum=max_page), # Page Slider
+            gr.update(interactive=False), # Save Tags
+            gr.update(interactive=False), # Save Images
+            gr.update(interactive=False, visible=False if gl.isDownloading else True), # Download Button
+            gr.update(interactive=False, visible=False), # Delete Button
+            gr.update(interactive=False, value=None, visible=True), # Install Path
+            gr.update(choices=[], value="", interactive=False), # Sub Folder List
+            gr.update(choices=[], value="", interactive=False), # File List
+            gr.update(value='<div style="min-height: 0px;"></div>'), # Preview HTML
+            gr.update(value=None), # Trained Tags
+            gr.update(value=None), # Base Model
+            gr.update(value=None) # Model Filename
     )
 
 def prev_model_page(content_type, sort_type, period_type, use_search_term, search_term, current_page, base_filter, only_liked, nsfw, tile_count):
@@ -459,23 +472,23 @@ def next_model_page(content_type, sort_type, period_type, use_search_term, searc
         HTML = model_list_html(gl.json_data)
     
     return  (
-            gr.Dropdown.update(choices=model_list, value="", interactive=True), # Model List
-            gr.Dropdown.update(choices=[], value=""), # Version List
-            gr.HTML.update(value=HTML), # HTML Tiles
-            gr.Button.update(interactive=hasPrev), # Prev Page Button
-            gr.Button.update(interactive=hasNext), # Next Page Button
-            gr.Slider.update(value=next_page, maximum=max_page), # Current Page
-            gr.Button.update(interactive=False), # Save Tags
-            gr.Button.update(interactive=False), # Save Images
-            gr.Button.update(interactive=False, visible=False if gl.isDownloading else True), # Download Button
-            gr.Button.update(interactive=False, visible=False), # Delete Button
-            gr.Textbox.update(interactive=False, value=None), # Install Path
-            gr.Dropdown.update(choices=[], value="", interactive=False), # Sub Folder List
-            gr.Dropdown.update(choices=[], value="", interactive=False), # File List
-            gr.HTML.update(value='<div style="min-height: 0px;"></div>'), # Preview HTML
-            gr.Textbox.update(value=None), # Trained Tags
-            gr.Textbox.update(value=None), # Base Model
-            gr.Textbox.update(value=None) # Model Filename
+            gr.update(choices=model_list, value="", interactive=True), # Model List
+            gr.update(choices=[], value=""), # Version List
+            gr.update(value=HTML), # HTML Tiles
+            gr.update(interactive=hasPrev), # Prev Page Button
+            gr.update(interactive=hasNext), # Next Page Button
+            gr.update(value=next_page, maximum=max_page), # Current Page
+            gr.update(interactive=False), # Save Tags
+            gr.update(interactive=False), # Save Images
+            gr.update(interactive=False, visible=False if gl.isDownloading else True), # Download Button
+            gr.update(interactive=False, visible=False), # Delete Button
+            gr.update(interactive=False, value=None), # Install Path
+            gr.update(choices=[], value="", interactive=False), # Sub Folder List
+            gr.update(choices=[], value="", interactive=False), # File List
+            gr.update(value='<div style="min-height: 0px;"></div>'), # Preview HTML
+            gr.update(value=None), # Trained Tags
+            gr.update(value=None), # Base Model
+            gr.update(value=None) # Model Filename
     )
 
 def insert_metadata(page_nr, api_url=None):
@@ -548,9 +561,9 @@ def update_model_versions(model_id, json_input=None):
             default_installed = next((f"{v} [Installed]" for v in installed_versions), None)
             default_value = default_installed or next(iter(version_names), None)
             
-            return gr.Dropdown.update(choices=display_version_names, value=default_value, interactive=True) # Version List
+            return gr.update(choices=display_version_names, value=default_value, interactive=True) # Version List
     
-    return gr.Dropdown.update(choices=[], value=None, interactive=False) # Version List
+    return gr.update(choices=[], value=None, interactive=False) # Version List
 
 def cleaned_name(file_name):
     if platform.system() == "Windows":
@@ -942,35 +955,35 @@ def update_model_info(model_string=None, model_version=None, only_html=False, in
                     break
         
         return  (
-                gr.HTML.update(value=output_html), # Preview HTML 
-                gr.Textbox.update(value=output_training, interactive=True), # Trained Tags
-                gr.Textbox.update(value=output_basemodel), # Base Model Number
-                gr.Button.update(visible=False if BtnDel else True, interactive=BtnDownInt, value=BtnDownTxt), # Download Button
-                gr.Button.update(interactive=BtnImage), # Images Button
-                gr.Button.update(visible=BtnDel, interactive=BtnDel), # Delete Button
-                gr.Dropdown.update(choices=file_list, value=default_file, interactive=True), # File List
-                gr.Textbox.update(value=cleaned_name(model_filename), interactive=True),  # Model File Name
-                gr.Textbox.update(value=dl_url), # Download URL
-                gr.Textbox.update(value=model_id), # Model ID
-                gr.Textbox.update(value=sha256_value),  # SHA256
-                gr.Textbox.update(interactive=True, value=folder_path if model_name else None), # Install Path
-                gr.Dropdown.update(choices=sub_folders, value=default_subfolder, interactive=True) # Sub Folder List
+                gr.update(value=output_html), # Preview HTML
+                gr.update(value=output_training, interactive=True), # Trained Tags
+                gr.update(value=output_basemodel), # Base Model Number
+                gr.update(visible=False if BtnDel else True, interactive=BtnDownInt, value=BtnDownTxt), # Download Button
+                gr.update(interactive=BtnImage), # Images Button
+                gr.update(visible=BtnDel, interactive=BtnDel), # Delete Button
+                gr.update(choices=file_list, value=default_file, interactive=True), # File List
+                gr.update(value=cleaned_name(model_filename), interactive=True),  # Model File Name
+                gr.update(value=dl_url), # Download URL
+                gr.update(value=model_id), # Model ID
+                gr.update(value=sha256_value),  # SHA256
+                gr.update(interactive=True, value=folder_path if model_name else None), # Install Path
+                gr.update(choices=sub_folders, value=default_subfolder, interactive=True) # Sub Folder List
         )
     else:
         return  (
-                gr.HTML.update(value=None), # Preview HTML
-                gr.Textbox.update(value=None, interactive=False), # Trained Tags
-                gr.Textbox.update(value=''), # Base Model Number
-                gr.Button.update(visible=False if BtnDel else True, value="Download model"), # Download Button
-                gr.Button.update(interactive=False), # Images Button
-                gr.Button.update(visible=BtnDel, interactive=BtnDel), # Delete Button
-                gr.Dropdown.update(choices=None, value=None, interactive=False), # File List
-                gr.Textbox.update(value=None, interactive=False),  # Model File Name
-                gr.Textbox.update(value=None),  # Download URL
-                gr.Textbox.update(value=None), # Model ID
-                gr.Textbox.update(value=None),  # SHA256
-                gr.Textbox.update(interactive=False, value=None), # Install Path
-                gr.Dropdown.update(choices=None, value=None, interactive=False) # Sub Folder List
+                gr.update(value=None), # Preview HTML
+                gr.update(value=None, interactive=False), # Trained Tags
+                gr.update(value=''), # Base Model Number
+                gr.update(visible=False if BtnDel else True, value="Download model"), # Download Button
+                gr.update(interactive=False), # Images Button
+                gr.update(visible=BtnDel, interactive=BtnDel), # Delete Button
+                gr.update(choices=None, value=None, interactive=False), # File List
+                gr.update(value=None, interactive=False),  # Model File Name
+                gr.update(value=None),  # Download URL
+                gr.update(value=None), # Model ID
+                gr.update(value=None),  # SHA256
+                gr.update(interactive=False, value=None), # Install Path
+                gr.update(choices=None, value=None, interactive=False) # Sub Folder List
         )
 
 def sub_folder_value(content_type, desc=None):
@@ -1081,25 +1094,25 @@ def update_file_info(model_string, model_version, file_metadata):
                                             break
                                 
                                 return  (
-                                        gr.Textbox.update(value=cleaned_name(file['name']), interactive=True),  # Model File Name Textbox
-                                        gr.Textbox.update(value=dl_url), # Download URL Textbox
-                                        gr.Textbox.update(value=model_id), # Model ID Textbox
-                                        gr.Textbox.update(value=sha256), # sha256 textbox
-                                        gr.Button.update(interactive=BtnDownInt, visible=False if installed else True, value=BtnDownTxt), # Download Button
-                                        gr.Button.update(interactive=True if installed else False, visible=True if installed else False),  # Delete Button
-                                        gr.Textbox.update(interactive=True, value=folder_path if model_name else None), # Install Path
-                                        gr.Dropdown.update(value=default_subfolder, interactive=True) # Sub Folder List
+                                        gr.update(value=cleaned_name(file['name']), interactive=True),  # Model File Name Textbox
+                                        gr.update(value=dl_url), # Download URL Textbox
+                                        gr.update(value=model_id), # Model ID Textbox
+                                        gr.update(value=sha256), # sha256 textbox
+                                        gr.update(interactive=BtnDownInt, visible=False if installed else True, value=BtnDownTxt), # Download Button
+                                        gr.update(interactive=True if installed else False, visible=True if installed else False),  # Delete Button
+                                        gr.update(interactive=True, value=folder_path if model_name else None), # Install Path
+                                        gr.update(value=default_subfolder, interactive=True) # Sub Folder List
                                 )
     
     return  (
-            gr.Textbox.update(value=None, interactive=False), # Model File Name Textbox
-            gr.Textbox.update(value=None), # Download URL Textbox
-            gr.Textbox.update(value=None), # Model ID Textbox
-            gr.Textbox.update(value=None), # sha256 textbox
-            gr.Button.update(interactive=False, visible=True), # Download Button
-            gr.Button.update(interactive=False, visible=False), # Delete Button
-            gr.Textbox.update(interactive=False, value=None), # Install Path
-            gr.Dropdown.update(choices=None, value=None, interactive=False) # Sub Folder List
+            gr.update(value=None, interactive=False), # Model File Name Textbox
+            gr.update(value=None), # Download URL Textbox
+            gr.update(value=None), # Model ID Textbox
+            gr.update(value=None), # sha256 textbox
+            gr.update(interactive=False, visible=True), # Download Button
+            gr.update(interactive=False, visible=False), # Delete Button
+            gr.update(interactive=False, value=None), # Install Path
+            gr.update(choices=None, value=None, interactive=False) # Sub Folder List
     )
 
 def get_proxies():
