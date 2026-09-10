@@ -24,7 +24,10 @@ import scripts.civitai_file_manage as _file
 gl.init()
 
 def get_domain():
-    return getattr(opts, "civitai_domain", "civitai.com")
+    domain = getattr(opts, "civitai_domain", "civitai.red")
+    if not domain or domain == "civitai.com":
+        domain = "civitai.red"
+    return domain
 
 def contenttype_folder(content_type, desc=None, fromCheck=False, custom_folder=None):
     use_LORA = getattr(opts, "use_LORA", False)
@@ -1150,6 +1153,8 @@ def get_headers(referer=None, no_api=None):
     return headers
 
 def request_civit_api(api_url=None, skip_error_check=False):
+    if api_url and "civitai.com" in api_url:
+        api_url = api_url.replace("civitai.com", "civitai.red")
     headers = get_headers()
     proxies, ssl = get_proxies()
     try:

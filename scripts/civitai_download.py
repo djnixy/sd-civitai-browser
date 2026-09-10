@@ -360,6 +360,8 @@ def convert_size(size):
     return f"{size:.2f} GB"
 
 def get_download_link(url, model_id):
+    if url and "civitai.com" in url:
+        url = url.replace("civitai.com", "civitai.red")
     headers = _api.get_headers(model_id)
     proxies, ssl = _api.get_proxies()
             
