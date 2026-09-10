@@ -150,19 +150,19 @@ def txt2img_output(image_url):
         return gr.update(value=geninfo)
 
 def get_base_models():
-    api_url = f'https://{_api.get_domain()}/api/v1/models?baseModels=GetModels'
-    json_return = _api.request_civit_api(api_url, True)
-    default_options = ["Pony","Illustrious","NoobAI"]
-    
-    if not isinstance(json_return, dict):
-        print("Couldn't fetch latest baseModel options, using default.")
-        return default_options
-    
+    default_options = ["Pony", "Illustrious", "NoobAI"]
     try:
+        api_url = f'https://{_api.get_domain()}/api/v1/models?baseModels=GetModels'
+        json_return = _api.request_civit_api(api_url, True)
+
+        if not isinstance(json_return, dict):
+            print("Couldn't fetch latest baseModel options, using default.")
+            return default_options
+
         options = json_return['error']['issues'][0]['unionErrors'][0]['issues'][0]['options']
         return options
-    except (KeyError, IndexError) as e:
-        print(f"Basemodel fetch error extracting options: {e}")
+    except Exception as e:
+        print(f"Basemodel fetch error: {e}, using default options.")
         return default_options
 
 def on_ui_tabs():    
