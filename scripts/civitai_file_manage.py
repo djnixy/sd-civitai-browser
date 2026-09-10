@@ -139,12 +139,12 @@ def delete_model(delete_finish=None, model_filename=None, model_string=None, lis
     btnDwn = not selected_list or selected_list == "[]"
     
     return (
-            gr.Button.update(interactive=btnDwn, visible=btnDwn),  # Download Button
-            gr.Button.update(interactive=False, visible=False),  # Cancel Button
-            gr.Button.update(interactive=False, visible=False),  # Delete Button
-            gr.Textbox.update(value=number),  # Delete Finish Trigger
-            gr.Textbox.update(value=model_name),  # Current Model 
-            gr.Dropdown.update(value=ver_value, choices=ver_choices)  # Version List
+            gr.update(interactive=btnDwn, visible=btnDwn),  # Download Button
+            gr.update(interactive=False, visible=False),  # Cancel Button
+            gr.update(interactive=False, visible=False),  # Delete Button
+            gr.update(value=number),  # Delete Finish Trigger
+            gr.update(value=model_name),  # Current Model
+            gr.update(value=ver_value, choices=ver_choices)  # Version List
     )
 
 def delete_associated_files(directory, base_name):
@@ -463,7 +463,7 @@ def model_from_sent(model_name, content_type):
     number = _download.random_number()
     
     return (
-        gr.Textbox.update(value=output_html, placeholder=number), # Preview HTML
+        gr.update(value=output_html, placeholder=number), # Preview HTML
     )
 
 def send_to_browser(model_name, content_type, click_first_item):
@@ -512,11 +512,11 @@ def send_to_browser(model_name, content_type, click_first_item):
             number = _download.random_number(click_first_item)
     
     return (
-        gr.Textbox.update(value=output_html), # Card HTML
-        gr.Button.update(interactive=False), # Prev Button
-        gr.Button.update(interactive=False), # Next Button 
-        gr.Slider.update(value=1, maximum=1), # Page Slider
-        gr.Textbox.update(value=number) # Click first card trigger 
+        gr.update(value=output_html), # Card HTML
+        gr.update(interactive=False), # Prev Button
+        gr.update(interactive=False), # Next Button
+        gr.update(value=1, maximum=1), # Page Slider
+        gr.update(value=number) # Click first card trigger
     )
 
 def convertCustomFolder(folderValue, basemodel, nsfw, author, modelName, modelId, versionName, versionId):
@@ -934,8 +934,8 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
         no_update = True
         gl.scan_files = False
         time.sleep(2)
-        return (gr.HTML.update(value='<div style="min-height: 0px;"></div>'),
-                gr.Textbox.update(value=number))
+        return (gr.update(value='<div style="min-height: 0px;"></div>'),
+                gr.update(value=number))
     
     folders_to_check = []
     if 'All' in folders:
@@ -985,8 +985,8 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
         no_update = True
         gl.scan_files = False
         time.sleep(2)
-        return (gr.HTML.update(value='<div style="min-height: 0px;"></div>'),
-                gr.Textbox.update(value=number))
+        return (gr.update(value='<div style="min-height: 0px;"></div>'),
+                gr.update(value=number))
         
     updated_models = []
     outdated_models = []
@@ -1003,8 +1003,8 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
             no_update = True
             gl.scan_files = False
             time.sleep(2)
-            return (gr.HTML.update(value='<div style="min-height: 0px;"></div>'),
-                    gr.Textbox.update(value=number))
+            return (gr.update(value='<div style="min-height: 0px;"></div>'),
+                    gr.update(value=number))
         file_name = os.path.basename(file_path)
         if progress != None:
             progress(files_done / total_files, desc=f"Processing file: {file_name}")
@@ -1033,8 +1033,8 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
         no_update = True
         gl.scan_files = False
         time.sleep(2)
-        return (gr.HTML.update(value='<div style="min-height: 0px;"></div>'),
-                gr.Textbox.update(value=number))
+        return (gr.update(value='<div style="min-height: 0px;"></div>'),
+                gr.update(value=number))
     
     def chunks(lst, n):
         for i in range(0, len(lst), n):
@@ -1067,8 +1067,8 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
                         print(f"Error: Received status code: {response.status_code} with URL: {url}")
                         print(response.text)
                         return  (
-                            gr.HTML.update(value=_api.api_error_msg("error")),
-                            gr.Textbox.update(value=number)
+                            gr.update(value=_api.api_error_msg("error")),
+                            gr.update(value=number)
                         )
                     else:
                         print(f"Error: Received status code {response.status_code} with URL: {url}")
@@ -1087,8 +1087,8 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
         api_response['items'] = all_items
         if api_response['items'] == []:
             return  (
-                gr.HTML.update(value=_api.api_error_msg("no_items")),
-                gr.Textbox.update(value=number)
+                gr.update(value=_api.api_error_msg("no_items")),
+                gr.update(value=number)
             )
         
     if progress != None:
@@ -1111,8 +1111,8 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
             no_update = True
             gl.scan_files = False
             return  (
-                    gr.HTML.update(value='<div style="font-size: 24px; text-align: center; margin: 50px !important;">No updates found for selected models.</div>'),
-                    gr.Textbox.update(value=number)
+                    gr.update(value='<div style="font-size: 24px; text-align: center; margin: 50px !important;">No updates found for selected models.</div>'),
+                    gr.update(value=number)
                 )
     
     model_chunks = list(chunks(all_model_ids, tile_count))
@@ -1123,15 +1123,15 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
     if from_ver:
         gl.scan_files = False
         return  (
-                gr.HTML.update(value='<div style="font-size: 24px; text-align: center; margin: 50px !important;">Outdated models have been found.<br>Please press the button above to load the models into the browser tab</div>'),
-                gr.Textbox.update(value=number)
+                gr.update(value='<div style="font-size: 24px; text-align: center; margin: 50px !important;">Outdated models have been found.<br>Please press the button above to load the models into the browser tab</div>'),
+                gr.update(value=number)
             )
 
     elif from_installed:
         gl.scan_files = False
         return  (
-                gr.HTML.update(value='<div style="font-size: 24px; text-align: center; margin: 50px !important;">Installed models have been loaded.<br>Please press the button above to load the models into the browser tab</div>'),
-                gr.Textbox.update(value=number)
+                gr.update(value='<div style="font-size: 24px; text-align: center; margin: 50px !important;">Installed models have been loaded.<br>Please press the button above to load the models into the browser tab</div>'),
+                gr.update(value=number)
             )
 
     elif from_tag:
@@ -1158,8 +1158,8 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
         gl.scan_files = False
         time.sleep(2)
         return  (
-                gr.HTML.update(value='<div style="min-height: 0px;"></div>'),
-                gr.Textbox.update(value=number)
+                gr.update(value='<div style="min-height: 0px;"></div>'),
+                gr.update(value=number)
             )
     
     elif from_preview:
@@ -1174,30 +1174,30 @@ def file_scan(folders, ver_finish, tag_finish, installed_finish, preview_finish,
             save_preview(file, api_response, overwrite_toggle)
         gl.scan_files = False
         return  (
-                gr.HTML.update(value='<div style="min-height: 0px;"></div>'),
-                gr.Textbox.update(value=number)
+                gr.update(value='<div style="min-height: 0px;"></div>'),
+                gr.update(value=number)
             )
 
 def finish_returns():
     return (
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=True, visible=False), # Organize models hidden until implemented
-        gr.Button.update(interactive=False, visible=False)
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=True, visible=False), # Organize models hidden until implemented
+        gr.update(interactive=False, visible=False)
     )
     
 def start_returns(number):
     return (
-        gr.Textbox.update(value=number),
-        gr.Button.update(interactive=False, visible=False),
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=False, visible=True),
-        gr.Button.update(interactive=False, visible=True),
-        gr.Button.update(interactive=False, visible=True),
-        gr.Button.update(interactive=False, visible=False), # Organize models hidden until implemented
-        gr.HTML.update(value='<div style="min-height: 100px;"></div>')
+        gr.update(value=number),
+        gr.update(interactive=False, visible=False),
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=False, visible=True),
+        gr.update(interactive=False, visible=True),
+        gr.update(interactive=False, visible=True),
+        gr.update(interactive=False, visible=False), # Organize models hidden until implemented
+        gr.update(value='<div style="min-height: 100px;"></div>')
     )
 
 def set_globals(input_global=None):
@@ -1252,13 +1252,13 @@ def save_preview_finish():
 def scan_finish():
     set_globals("reset")
     return (
-        gr.Button.update(interactive=no_update, visible=no_update),
-        gr.Button.update(interactive=no_update, visible=no_update),
-        gr.Button.update(interactive=no_update, visible=no_update),
-        gr.Button.update(interactive=no_update, visible=no_update),
-        gr.Button.update(interactive=no_update, visible=False),
-        gr.Button.update(interactive=False, visible=False),
-        gr.Button.update(interactive=not no_update, visible=not no_update)
+        gr.update(interactive=no_update, visible=no_update),
+        gr.update(interactive=no_update, visible=no_update),
+        gr.update(interactive=no_update, visible=no_update),
+        gr.update(interactive=no_update, visible=no_update),
+        gr.update(interactive=no_update, visible=False),
+        gr.update(interactive=False, visible=False),
+        gr.update(interactive=not no_update, visible=not no_update)
     )
 
 def load_to_browser(content_type, sort_type, period_type, use_search_term, search_term, tile_count, base_filter, nsfw):
@@ -1268,13 +1268,13 @@ def load_to_browser(content_type, sort_type, period_type, use_search_term, searc
     from_ver, from_installed = False, False
     return (
         *model_list_return,
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=True, visible=True),
-        gr.Button.update(interactive=False, visible=False),
-        gr.Button.update(interactive=False, visible=False),
-        gr.HTML.update(value='<div style="min-height: 0px;"></div>')
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=True, visible=True),
+        gr.update(interactive=False, visible=False),
+        gr.update(interactive=False, visible=False),
+        gr.update(value='<div style="min-height: 0px;"></div>')
     )
     
 def cancel_scan():
