@@ -34,11 +34,13 @@ def random_number(prev=None):
 
 gl.init()
 rpc_secret = "R7T5P2Q9K6"
-try:
-    queue = not cmd_opts.no_gradio_queue
-except AttributeError:
-    queue = not cmd_opts.disable_queue
-except:
+no_gradio_queue = getattr(cmd_opts, "no_gradio_queue", None)
+disable_queue = getattr(cmd_opts, "disable_queue", None)
+if no_gradio_queue is not None:
+    queue = not no_gradio_queue
+elif disable_queue is not None:
+    queue = not disable_queue
+else:
     queue = True
 
 def start_aria2_rpc():

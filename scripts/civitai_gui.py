@@ -47,7 +47,10 @@ if not forge:
 gl.init()
 
 def saveSettings(ust, ct, pt, st, bf, cj, td, ol, hi, sn, ss, ts):
-    config = cmd_opts.ui_config_file
+    config = getattr(cmd_opts, "ui_config_file", None)
+    if not config:
+        print("Cannot save settings: ui_config_file is not set on cmd_opts")
+        return
 
     # Create a dictionary to map the settings to their respective variables
     settings_map = {

@@ -37,11 +37,13 @@ no_update = False
 from_ver = False
 from_tag = False
 from_installed = False
-try:
-    queue = not cmd_opts.no_gradio_queue
-except AttributeError:
-    queue = not cmd_opts.disable_queue
-except:
+no_gradio_queue = getattr(cmd_opts, "no_gradio_queue", None)
+disable_queue = getattr(cmd_opts, "disable_queue", None)
+if no_gradio_queue is not None:
+    queue = not no_gradio_queue
+elif disable_queue is not None:
+    queue = not disable_queue
+else:
     queue = True
 
 def delete_model(delete_finish=None, model_filename=None, model_string=None, list_versions=None, sha256=None, selected_list=None, model_ver=None, model_json=None):
