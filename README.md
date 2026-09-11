@@ -1,5 +1,7 @@
+### Extension for [Automatic1111's Stable Diffusion Web UI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) & [SD-WebUI Forge Classic (neo)](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo)
 
-### Extension for [Automatic1111's Stable Diffusion Web UI](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
+> [!IMPORTANT]
+> **Branch Notice**: The `forgeneo` branch is specifically adapted and maintained for **Forgeneo** ([sd-webui-forge-classic `neo` branch](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo)) as well as standard SD-WebUI. If you are using Forge Classic Neo, make sure to use this branch (`forgeneo`).
 
 <h1>Features 🚀</h1>
 <h3>Browse all models from CivitAI 🧩</h3>
@@ -72,7 +74,14 @@ These settings can be found under the "Settings" tab in Web-UI and then under th
 
 <h3>Manual Installation:</h3>
 
-1. Download the latest version from this site and unpack the .zip  
+**Using Git (Recommended for Forge Neo):**
+```bash
+cd <your-webui-folder>/extensions
+git clone -b forgeneo https://github.com/djnixy/sd-civitai-browser.git
+```
+
+**Using ZIP:**
+1. Download the latest version from this site (ensure you are on the `forgeneo` branch) and unpack the .zip  
 ![2023-09-25 13_06_31](https://github.com/BlafKing/sd-civitai-browser-plus/assets/9644716/12e46c6b-74b5-4ed5-bf55-cb76c5f75c62)
 
 2. Navigate to your extensions folder (Your SD folder/webui/extensions)
