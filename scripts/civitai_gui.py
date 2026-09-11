@@ -1280,10 +1280,10 @@ def on_ui_settings():
     shared.opts.add_option(
         "civitai_domain",
         shared.OptionInfo(
-            "civitai.com",
+            "civitai.red",
             "Civitai domain",
             gr.Radio,
-            lambda: {"choices": ["civitai.com", "civitai.red"]},
+            lambda: {"choices": ["civitai.red", "civitai.com"]},
             section=browser,
             **({'category_id': cat_id} if use_cat else {})
         ).info("Select the preferred Civitai domain. Requires UI reload.")

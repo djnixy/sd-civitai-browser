@@ -337,7 +337,10 @@ function setupClickOutsideListener() {
 function createLink(infoElement) {
 
     const domainInput = document.querySelector('#civitai_domain textarea');
-    const domain = domainInput ? domainInput.value : 'civitai.com';
+    let domain = domainInput ? domainInput.value : 'civitai.red';
+    if (domain === 'civitai.com') {
+        domain = 'civitai.red';
+    }
 
     const existingText = "(You can create your own API key in your CivitAI account settings, this required for some downloads, Requires UI reload)";
     const linkText = "CivitAI account settings";

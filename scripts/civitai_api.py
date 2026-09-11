@@ -24,7 +24,10 @@ import scripts.civitai_file_manage as _file
 gl.init()
 
 def get_domain():
-    return getattr(opts, "civitai_domain", "civitai.com")
+    domain = getattr(opts, "civitai_domain", "civitai.red")
+    if domain == "civitai.com":
+        return "civitai.red"
+    return domain or "civitai.red"
 
 def contenttype_folder(content_type, desc=None, fromCheck=False, custom_folder=None):
     use_LORA = getattr(opts, "use_LORA", False)
@@ -313,6 +316,8 @@ def create_api_url(content_type=None, sort_type=None, period_type=None, use_sear
     
     if isNext is not None:
         api_url = gl.json_data['metadata']['nextPage' if isNext else 'prevPage']
+        if api_url and "civitai.com" in api_url:
+            api_url = api_url.replace("civitai.com", "civitai.red")
         print(f"CivitAI API URL: {api_url}")
         debug_print(api_url)
         return api_url
@@ -685,13 +690,16 @@ def update_model_info(model_string=None, model_version=None, only_html=False, in
                 if selected_version['baseModel']:
                     output_basemodel = selected_version['baseModel']
                 for file in selected_version['files']:
-                    dl_dict[file['name']] = file['downloadUrl']
+                    file_dl_url = file.get('downloadUrl', '')
+                    if file_dl_url and "civitai.com" in file_dl_url:
+                        file_dl_url = file_dl_url.replace("civitai.com", "civitai.red")
+                    dl_dict[file['name']] = file_dl_url
                     
                     if not model_filename:
                         model_filename = os.path.splitext(file['name'])[0]
                         model_extension = os.path.splitext(file['name'])[1]
                         model_filename = f"{model_filename}_{file['id']}{model_extension}"
-                        dl_url = file['downloadUrl']
+                        dl_url = file_dl_url
                         gl.json_info = item
                         sha256_value = file['hashes'].get('SHA256', 'Unknown')
                         
@@ -713,7 +721,7 @@ def update_model_info(model_string=None, model_version=None, only_html=False, in
                         model_filename = os.path.splitext(file['name'])[0]
                         model_extension = os.path.splitext(file['name'])[1]
                         model_filename = f"{model_filename}_{file['id']}{model_extension}"
-                        dl_url = file['downloadUrl']
+                        dl_url = file_dl_url
                         gl.json_info = item
                         sha256_value = file['hashes'].get('SHA256', 'Unknown')
                 
@@ -733,6 +741,8 @@ def update_model_info(model_string=None, model_version=None, only_html=False, in
                                 model_folder = os.path.join(contenttype_folder("TextualInversion"))
                 
                 model_url = selected_version.get('downloadUrl', '')
+                if model_url and "civitai.com" in model_url:
+                    model_url = model_url.replace("civitai.com", "civitai.red")
                 model_main_url = f"https://{domain}/models/{item['id']}"
                 img_html = '<div class="sampleimgs"><input type="radio" name="zoomRadio" id="resetZoom" class="zoom-radio" checked>'
                 
@@ -1051,7 +1061,9 @@ def update_file_info(model_string, model_version, file_metadata):
                                 if embed_check and file_format == "PickleTensor":
                                     if sizeKB <= 100:
                                         model_folder = os.path.join(contenttype_folder("TextualInversion"))
-                                dl_url = file['downloadUrl']
+                                dl_url = file.get('downloadUrl', '')
+                                if dl_url and "civitai.com" in dl_url:
+                                    dl_url = dl_url.replace("civitai.com", "civitai.red")
                                 gl.json_info = item
                                 for root, _, files in os.walk(model_folder, followlinks=True):
                                     if file_name in files:
@@ -1150,6 +1162,8 @@ def get_headers(referer=None, no_api=None):
     return headers
 
 def request_civit_api(api_url=None, skip_error_check=False):
+    if api_url and "civitai.com" in api_url:
+        api_url = api_url.replace("civitai.com", "civitai.red")
     headers = get_headers()
     proxies, ssl = get_proxies()
     try:

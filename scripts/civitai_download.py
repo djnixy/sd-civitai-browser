@@ -102,6 +102,8 @@ class TimeOutFunction(Exception):
 
 def create_model_item(dl_url, model_filename, install_path, model_name, version_name, model_sha256, model_id, create_json, from_batch=False):
     global dl_manager_count
+    if dl_url and "civitai.com" in dl_url:
+        dl_url = dl_url.replace("civitai.com", "civitai.red")
     if model_id:
         model_id = int(model_id)
     if model_sha256:
@@ -179,6 +181,8 @@ def selected_to_queue(model_list, subfolder, download_start, create_json, curren
                     model_filename = _api.cleaned_name(files[0].get('name'))
                     model_sha256 = files[0].get('hashes', {}).get('SHA256')
                     dl_url = files[0].get('downloadUrl')
+                if dl_url and "civitai.com" in dl_url:
+                    dl_url = dl_url.replace("civitai.com", "civitai.red")
                 break
                 
         model_folder = _api.contenttype_folder(content_type, desc)
@@ -360,6 +364,8 @@ def convert_size(size):
     return f"{size:.2f} GB"
 
 def get_download_link(url, model_id):
+    if url and "civitai.com" in url:
+        url = url.replace("civitai.com", "civitai.red")
     headers = _api.get_headers(model_id)
     proxies, ssl = _api.get_proxies()
             
@@ -370,6 +376,8 @@ def get_download_link(url, model_id):
             return "NO_API"
         
         download_link = response.headers["Location"]
+        if download_link and "civitai.com" in download_link:
+            download_link = download_link.replace("civitai.com", "civitai.red")
         return download_link
     else:
         return None
