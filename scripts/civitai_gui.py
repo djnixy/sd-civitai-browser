@@ -1280,7 +1280,7 @@ def on_ui_settings():
     shared.opts.add_option(
         "civitai_domain",
         shared.OptionInfo(
-            "civitai.com",
+            "civitai.red",
             "Civitai domain",
             gr.Radio,
             lambda: {"choices": ["civitai.com", "civitai.red"]},

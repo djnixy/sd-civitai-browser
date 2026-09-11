@@ -1,5 +1,16 @@
-from modules.shared import opts
+from modules.shared import opts, cmd_opts
+
+# Fix compatibility with SD-WebUI Forge Classic (neo) where cmd_opts namespace lacks specific directory/option attributes.
+for _attr in [
+    "hypernetwork_dir", "ckpt_dir", "embeddings_dir", "lora_dir", "vae_dir", "controlnet_dir",
+    "ui_config_file", "no_gradio_queue", "disable_queue", "swinir_models_path",
+    "realesrgan_models_path", "gfpgan_models_path", "bsrgan_models_path", "esrgan_models_path"
+]:
+    if not hasattr(cmd_opts, _attr):
+        setattr(cmd_opts, _attr, None)
+
 do_debug_print = getattr(opts, "civitai_debug_prints", False)
+
 def init():
     import warnings, os, json
     from urllib3.exceptions import InsecureRequestWarning
